@@ -81,14 +81,14 @@ abstract class SServer
     }
 
     final private function init(){
-        $this->setting = array_merge($this->setting ?? [], [
+        $this->setting = array_merge([
             'worker_num' => 1,
             'max_request' => 20000,
             'heartbeat_check_interval' => 300,
             'heartbeat_idle_time' => 600,
             'open_cpu_affinity' => true,
             'open_tcp_nodelay' => true,
-        ]);
+        ], $this->setting ?? []);
         $this->server = $this->createServer();
         $this->server->set($this->setting);
         $this->setCallBack();

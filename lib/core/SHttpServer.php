@@ -41,12 +41,14 @@ abstract class SHttpServer extends SServer implements IServer
     public function setCallBack(){
         parent::setCallBack();
         $this->server->on('Request', function($request, $respons) {
-            $app = new SwooleApp($request, $respons);
-            try {
-                $app->run($this->module);
-            } catch (Exception $e) {
-                if ($e->getMessage() !== '0') //'0' : 正常 退出
-                    throw $e;
+            if($request->server['path_info'] === '/'){
+                $app = new SwooleApp($request, $respons);
+                try {
+                    $app->run($this->module);
+                } catch (Exception $e) {
+                    if ($e->getMessage() !== '0') //'0' : 正常 退出
+                        throw $e;
+                }
             }
         });
     }
