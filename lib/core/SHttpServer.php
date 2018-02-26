@@ -15,14 +15,17 @@ use Swoole\Http\Server;
 abstract class SHttpServer extends SServer implements IServer
 {
     private $module = '';
+    private $debug = false;
 
     /**
      * SServer constructor.
      * @param string $module
+     * @param bool $debug
      */
-    public function __construct(string $module = '')
+    public function __construct(string $module = '', $debug=false)
     {
         $this->module = $module;
+        $this->debug = $debug;
         parent::__construct();
     }
 
@@ -41,13 +44,18 @@ abstract class SHttpServer extends SServer implements IServer
     public function setCallBack(){
         parent::setCallBack();
         $this->server->on('Request', function($request, $respons) {
-            if($request->server['path_info'] === '/'){
+            if(substr($request->server['path_info'], -1, 1) === '/'){
+                var_dump($request->server['path_info']);
                 $app = new SwooleApp($request, $respons);
                 try {
                     $app->run($this->module);
                 } catch (Exception $e) {
                     if ($e->getMessage() !== '0') //'0' : 正常 退出
                         throw $e;
+                }
+                if($this->debug){
+                    var_dump('exit');
+                    exit;
                 }
             }
         });

@@ -22,4 +22,29 @@ class SProcess extends Process
     public function __construct($task, $redirect_pip_output, $createPip){
         parent::__construct([$task, 'run'], $redirect_pip_output, $createPip);
     }
+
+    private $using = 0;
+
+    /**
+     * @param $string
+     */
+    public function work($string = ''): void
+    {
+        $this->using = 1;
+        $this->write($string);
+    }
+
+    public function idel()
+    {
+        $this->using = 0;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isUsing(){
+        return !!$this->using;
+    }
+
+
 }

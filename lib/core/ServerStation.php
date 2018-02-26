@@ -20,11 +20,7 @@ class ServerStation
     static public $port;
     static public $wId;
 
-    static public $types = [];
-    static public $servers = [
-        ServerType::SERVER=> [],
-        ServerType::CENTER=> [],
-        ServerType::BEANSTALK=> [],
-    ];
+    static public $servers = [];
+    static public $clients = [];
     static public $connections = [];
 }

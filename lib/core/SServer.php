@@ -51,7 +51,7 @@ abstract class SServer
     /**
      * @return string
      */
-    protected function getHost():string
+    public function getHost():string
     {
         return "$this->ip:$this->port";
     }
@@ -72,15 +72,12 @@ abstract class SServer
         $this->worker_name = $this->getWorker();
         $this->port = $this->getPort();
         $this->setting = $this->getSetting();
+        $this->server = $this->createServer();
 
         if(!$this->port){
             die('no port');
         }
 
-        $this->init();
-    }
-
-    final private function init(){
         $this->setting = array_merge([
             'worker_num' => 1,
             'max_request' => 20000,
@@ -89,15 +86,14 @@ abstract class SServer
             'open_cpu_affinity' => true,
             'open_tcp_nodelay' => true,
         ], $this->setting ?? []);
-        $this->server = $this->createServer();
         $this->server->set($this->setting);
         $this->setCallBack();
-        tracker('process', "server 已经监听".$this->getPort()."端口 :)");
     }
 
     abstract protected function createServer();
 
     final public function run(){
+        tracker('process', "server 已经监听".$this->getPort()."端口 :)");
         $this->server->start();
     }
 
@@ -157,7 +153,7 @@ abstract class SServer
 //            $pidStr = shell_exec("echo $(pidof ".$this->worker_name.")");
 //            if($pidStr){
 //                $pidArr = explode(' ',$pidStr);
-//                foreach ($pidArr as $pid){
+//                foreach ($pidArr as $pid){`
 //                    shell_exec("kill -2 {$pid}");
 //                    usleep(90000);
 //                }
@@ -170,11 +166,12 @@ abstract class SServer
      * @return string
      */
     final private function matchIp(){
-        $res = swoole_get_local_ip();
-        if(isset($res["eth0"])){
-            return $res["eth0"];
-        }
-
+//        $res = swoole_get_local_ip();
+//        $res = shell_exec('curl ifconfig.me/all.json');
+//        var_dump($res);
+//        if(isset($res["eth0"])){
+//            return $res["eth0"];
+//        }
         $path = '/home/host';
         if(!is_file($path)){
             $res = shell_exec('curl ifconfig.me/all.json');
@@ -184,6 +181,7 @@ abstract class SServer
         }else{
             $val = file_get_contents($path);
         }
+
         return $val;
     }
 }
