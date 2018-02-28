@@ -14,7 +14,7 @@ abstract class SServer
     /**
      * @var \Swoole\Server
      */
-    protected $server;
+    public $server;
     protected $ip;
     protected $port;
     private $master_name;
