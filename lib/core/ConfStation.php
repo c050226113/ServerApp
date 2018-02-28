@@ -6,6 +6,7 @@ namespace ServerApp\lib\core;
 use Exception;
 use Swoole\Server;
 use Tao\src\model\redis\tao\ConfServer;
+use Tao\src\model\swoole\ClientList;
 use Tao\src\model\swoole\ConfTable;
 
 /**
@@ -46,6 +47,9 @@ class ConfStation
 //            ConfTable::WORKER_ID=> $worker_id
 //        ]);
         ConfServer::getInstance()->hSet($fd.'', $host . "|" . $type);
+        ClientList::getInstance()->set($host, [
+            ClientList::FD=> $fd
+        ]);
 
         if($type === ServerType::SERVER){
             var_dump('server add');
